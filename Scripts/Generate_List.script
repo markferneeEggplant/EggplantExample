@@ -1,0 +1,79 @@
+﻿
+
+to getElements URL
+	try 
+		set driver to WebDriver()
+		set driver's url to URL
+		
+		put driver.FindElements(WebXPath:"//a[@href]") into elements
+		
+		--put driver.FindElements(webTagName:"a") into elements
+		--put driver.FindElements(webXPath:"//*[@href]") into elements
+		
+		set Parent to URL 
+		set Parent_Friendly to WebDriver().Title
+		set URL_queue to ""
+		
+		set total to global depth --- iterations
+		set n to 0
+		--set n to number of items in elements
+		repeat until n = total or repeatindex() > the number of items in elements
+			
+			put item repeatindex() of elements into e
+			--try
+			if e.isDisplayed equals Yes
+				put e.attribute("href") into child_pre
+				
+				-- Remove invalid chars
+				replaceChars(child_pre)
+				put the result into Child
+				
+				--log child
+				put e.text into Child_Friendly
+				
+				-- Check for Duplicates Links
+				Excel.DeDupe(Parent),(Child)
+				put the result into isDupe
+				
+				-- 
+				if Child does not contain global ignoredDomains
+					
+					if isDupe not equal to true 
+						if Parent not equal to Child
+							--insert (Parent,Parent_Friendly,Child,Child_Friendly) after global URL_sequence
+							put Child & comma after URL_queue
+							--insert Child after URL_sequence.(Parent)
+							
+							Excel.AddRow(Parent,Parent_Friendly,Child,Child_Friendly)
+							set n to n + 1 
+						end if 
+					end if 
+				end if 
+			end if
+			--end try 
+		end repeat
+		replace last comma in URL_queue with ""
+		return URL_queue
+	catch exception 
+		log exception
+	end try 
+end getElements
+
+
+
+to replaceChars s
+	set invalidList to ("#","/")
+	repeat with each c in invalidList
+		if the last character in s = c
+			delete the last character in s
+		end if
+	end repeat
+	
+	
+	repeat with each item in ("www3","www2")
+		replace all occurrences of it in s with "www"
+	end repeat 
+	
+	return s
+end replaceChars
+

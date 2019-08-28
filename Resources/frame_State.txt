@@ -1,0 +1,1 @@
+,{"name":"STATENAME","type":"State","id":STATEID,"parentId":0,"dx":280,"dy":YPOSITION,"textX":20,"textY":25,"shapeWidth":120,"shapeHeight":100,"stateType":"Normal","invisible":false,"sortingType":"B","parameters":[{"id":0,"name":"","type":"","initial":"","random":"","ranges":[]}]}

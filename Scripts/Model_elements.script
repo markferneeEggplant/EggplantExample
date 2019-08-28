@@ -1,0 +1,37 @@
+﻿to Action ActionName,AID,SID,CID
+	put file ResourcePath("frame_Action.txt") into contents
+	cleanseNames(ActionName)
+	put the result into ActionName
+	replace all occurrences of "ACTIONNAME" in contents with "goto_"&&ActionName
+	replace all occurrences of "ACTIONID" in contents with AID
+	replace all occurrences of "STATEID" in contents with SID
+	replace all occurrences of "CID" in contents with CID 
+	return contents
+end Action
+
+to State StateName,SID,y
+	put file ResourcePath("frame_State.txt") into contents
+	replace all occurrences of "STATENAME" in contents with StateName
+	replace all occurrences of "STATEID" in contents with SID
+	replace all occurrences of "YPOSITION" in contents with y
+	return contents
+end State
+
+to initial Total_States,Total_Actions
+	put file ResourcePath("frame_InitialStates.txt") into contents
+	replace all occurrences of "TOTALSTATES" in contents with Total_States
+	replace all occurrences of "TOTALACTIONS" in contents with Total_Actions
+	return contents
+end initial
+
+to testCase 
+	put file ResourcePath("frame_TestCases.txt") into contents
+	return contents
+end testCase
+
+to cleanseNames Name
+	repeat with each item in ("http://","https://","www.")
+		replace all occurrences of it in Name with ""
+	end repeat
+	return Name
+end cleanseNames

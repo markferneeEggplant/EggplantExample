@@ -1,0 +1,86 @@
+﻿
+to CreateNewFile
+	try
+		delete File ResourcePath("Model.xlsx")
+	end try 
+	
+	set FileName to "Model.xlsx"
+	copy file ResourcePath("Links.xlsx") as FileName
+end CreateNewFile
+
+
+--- ADD NEW ROW TO EXCEL
+to AddRow (row)
+	set Links_Excel to Workbook(ResourcePath("Model.xlsx"))
+	set Links to Links_Excel.Worksheet("Sheet1") 
+	set n to 2 -- HeaderRow
+	
+	repeat forever 
+		if Links.cell("A"&n) equal to ""
+			exit repeat
+		end if
+		set n to n + 1
+	end repeat
+	
+	put item 1 of Row into Cell ("A"&n) of Links
+	put item 2 of Row into Cell ("B"&n) of Links
+	put item 3 of Row into Cell ("C"&n) of Links
+	put item 4 of Row into Cell ("D"&n) of Links
+	
+end AddRow
+
+
+to DeDupe Parent, Child
+
+	set flag to false
+	set links to table ("Sheet1") of (type:"excel", file:ResourcePath("Model.xlsx"), writable: Yes)
+	put the records of links into data
+	
+	repeat until repeatindex() > the number of items in data
+		put item repeatindex() of data into row
+		--log "CHECK" &&row.Parent && "   " && URL
+		set P to row.Parent
+		set C to row.Child
+		
+		
+		if  P = Parent and C = Child
+			set flag to true
+			logwarning "Duplicate- Bypassed" && URL 
+			Exit repeat		
+		end if
+	end repeat 
+	return flag 
+	
+end DeDupe
+
+-- CHECK IF THE PARENT HAS ALREADY BEEN PROCESSED
+to checkParent URL
+	
+	set flag to false
+	set links to table ("Sheet1") of (type:"excel", file:ResourcePath("Model.xlsx"), writable: Yes)
+	put the records of links into data
+	
+	repeat until repeatindex() > the number of items in data
+		put item repeatindex() of data into row
+		--log "CHECK" &&row.Parent && "   " && URL
+		set rowVal to row.Parent
+		
+		if  URL = rowVal
+			set flag to true
+			logwarning "Bypassed" && URL 
+			Exit repeat		
+		end if
+	end repeat 
+	
+	return flag 
+	
+end checkParent
+
+
+to getData_Model
+	set links to table ("Sheet1") of (type:"excel", file:ResourcePath("Model.xlsx"), writable: Yes)
+	put the records of links into data
+	return data
+end getData_Model
+
+

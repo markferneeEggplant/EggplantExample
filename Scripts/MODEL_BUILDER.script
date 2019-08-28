@@ -1,0 +1,12 @@
+﻿
+
+
+
+set Global WebdriverConnection to "WIN_10_LAB_WEBDRIVER"
+set global depth to 3 -- number of links per page to visit
+set global ignoredDomains to ("") -- filter out (twitter etc)
+WebDriver_conn ("https://www.nhs.uk/") -- the Parent URL
+Model_create -- Creates Model
+
+
+

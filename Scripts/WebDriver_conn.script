@@ -1,0 +1,54 @@
+﻿PARAMS URL
+
+
+Excel.CreateNewFile
+
+try 
+	WebDisconnect Global WebdriverConnection 
+end try 
+
+WebConnect Global WebdriverConnection 
+--WebConnect "ChromeDriver_Local"
+
+set driver to WebDriver()
+set driver's windowSize to "max"
+
+set global URL_sequence to ""
+set global URL_queue to ""
+
+
+--set URL_main to "https://www.nhs.uk"
+set URL_main to URL
+
+-- CLEANSE
+Generate_List.replaceChars(URL_Main)
+put the result into URL_Main
+
+
+Generate_List.getElements (URL_main)
+put the result into q
+
+
+repeat until q is equal to ""
+	put item 1 of q into Next_URL
+	if Next_URL does not contain global ignoredDomains
+		
+		-- CLEANSE
+		Generate_List.replaceChars(Next_URL)
+		put the result into Next_URL
+		Excel.checkParent (Next_URL)
+		put the result into flag
+		
+		if flag not equal to true	
+			logsuccess "Next URL:" && Next_URL
+			Generate_List.getElements (Next_URL)
+			put the result into r
+			set q to q &comma& r 
+		end if
+	end if 
+	
+	-- Remove the URL From Queue
+	delete item 1 of q
+end repeat
+
+WebDisconnect Global WebdriverConnection 

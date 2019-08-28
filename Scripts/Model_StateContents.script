@@ -1,0 +1,46 @@
+﻿
+set global States_URL  to ""
+set global States_Simple to ""
+set global JSON_states to ""
+set ModelData to Excel.getData_Model
+get_States(ModelData)
+
+
+set global NumberOf_States to global IDs
+
+return STATES_URL
+
+to get_States ModelData
+	
+	set y to 20
+	repeat until repeatindex() > the number of items in ModelData
+		
+		if repeatindex() = 1 
+			set root to data.parent
+		end if
+		
+		put item repeatindex() of ModelData into data
+		set stateName to data.parent
+		set stateSimple to data.parent_simple
+		if stateSimple equal to ""
+			set stateSimple to root
+		end if
+		
+		--log "CHECK" &&row.Parent && "   " && URL
+		if stateName is not among the keys of (global States_URL)
+			put global IDs after global States_URL.(stateName)
+			--if  stateSimple is not among the keys of (global States_Simple)
+			put global IDs after global States_Simple.(stateSimple)
+			Model_elements.State (stateName),(global IDs),(y)
+			set global JSON_states to global JSON_states & the result
+			
+			
+			set y to y + 100
+			
+			set global IDs to global IDs + 1 
+		end if
+	end repeat	
+	log global States_URL
+end get_States
+
+

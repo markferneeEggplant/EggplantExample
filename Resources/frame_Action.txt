@@ -1,0 +1,1 @@
+,{"name":"ACTIONNAME","type":"Action","id":ACTIONID,"parentId":STATEID,"dx":20,"dy":40,"textX":40,"textY":22.5,"shapeWidth":80,"shapeHeight":40,"actionType":"Normal","sortingType":"C","parameters":[{"id":0,"name":"","type":"","initial":"","random":"","ranges":[]}],"connectedStates":[{"stateRef":CID}],"callLimit":0,"weight":100}

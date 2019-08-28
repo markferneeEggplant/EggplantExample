@@ -1,0 +1,68 @@
+﻿
+set Json_Model to ""
+set global IDs to 5
+set StateOut to ""
+set ActionOut to ""
+set TotalObject to 0
+set TotalStates to ""
+
+set JSON_actions to ""
+set ModelData to Excel.getData_Model
+
+set x to 10 
+set y to 20 
+
+
+Model_StateContents
+
+repeat with each item in ModelData
+	put item repeatindex() of ModelData into data
+	
+	if repeatindex() = 1
+		set RootURL to data.parent
+		set RootSimple to data.parent_Simple
+	end if
+	
+	----- >  STATES
+	set SID to global States_URL.(data.parent)
+	set global IDs to global IDs + 1
+	set AID to global IDs -- ACTION IDs
+	
+	if data.child equals ""
+		set actionSimple to  data.child
+	end if
+	
+	get_ACTION_CID(data.child),(data.child_Simple),(data.parent),(SID),(AID)
+	put the result into CID
+	
+	-- ensure no Broken Links
+	Model_elements.Action (data.child),(AID),(SID),(CID)
+	set  JSON_actions to JSON_actions & the result 
+end repeat
+
+
+Model_elements.Initial (global NumberOf_States),(global IDs - global NumberOf_States)
+put the result into JSON_initial
+Model_elements.testCase 
+put the result into JSON_testCase
+put JSON_initial & global JSON_states & JSON_actions & JSON_testCase  into  file ResourcePath("Model.json")
+
+
+
+to get_ACTION_CID ActionName, ActionSimple, Parent, PID,AID
+
+	if global States_URL.(actionName) not equal to ""
+		set CID to global States_URL.(actionName)
+	else if global States_Simple.(actionSimple) not equal to ""
+		set CID to global States_Simple.(actionSimple)
+	end if 
+	
+	if CID = "CID"
+		set CID to 0
+	end if
+	LOGSUCCESS "PARENT:"&&Parent&&PID&&"CONNECTING"&&CID&&"ACTION"&&AID
+	return CID
+	
+end get_ACTION_CID
+
+
